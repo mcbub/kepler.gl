@@ -28,6 +28,12 @@ import {
   MAP_CONFIG_URL
 } from './constants/default-settings';
 import {LOADING_METHODS_NAMES} from './constants/default-settings';
+import {toggleModal} from 'kepler.gl/actions';
+import {console as Console} from 'global/window';
+import {MAP_CONFIG_URL} from './constants/sample-maps';
+import {uploadFile} from './utils/utils';
+import DropboxHandler from './utils/dropbox';
+
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -36,14 +42,46 @@ export const LOAD_REMOTE_RESOURCE_SUCCESS = 'LOAD_REMOTE_RESOURCE_SUCCESS';
 export const LOAD_REMOTE_RESOURCE_ERROR = 'LOAD_REMOTE_RESOURCE_ERROR';
 export const LOAD_MAP_SAMPLE_FILE = 'LOAD_MAP_SAMPLE_FILE';
 export const SET_SAMPLE_LOADING_STATUS = 'SET_SAMPLE_LOADING_STATUS';
+export const SET_AUTH_TOKEN = 'SET_AUTH_TOKEN';
+export const PROPAGATE_STORAGE_EVENT = 'PROPAGATE_STORAGE_EVENT';
 
 // ACTIONS
+
 export function switchToLoadingMethod(method) {
   return dispatch => {
     dispatch(setLoadingMethod(method));
     if (method === LOADING_METHODS_NAMES.sample) {
       dispatch(loadSampleConfigurations());
     }
+  }
+}
+
+export function initApp() {
+  return {
+    type: INIT
+  }
+}
+export function setAuthToken() {
+  return {
+    type: SET_AUTH_TOKEN
+  }
+}
+
+export function propagateStorageEvent(event) {
+  return {
+    type: PROPAGATE_STORAGE_EVENT,
+    event
+  };
+}
+
+export function exportFileToCloud(type) {
+  return dispatch => {
+    uploadFile(DropboxHandler)
+      // need to perform share as well
+      .then(
+        () => console.log('Uplaod success'),
+        error => console.log('Upload error', error)
+      )
   };
 }
 

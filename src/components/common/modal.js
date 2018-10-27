@@ -124,7 +124,7 @@ export const ModalFooter = ({
       </FooterActionWrapper>
     </StyledModalFooter>
   );
-}
+};
 
 class ModalDialog extends Component {
   static propTypes = {
