@@ -38,12 +38,19 @@ function setAccessToken(token) {
   dropbox.setAccessToken(token);
 }
 
+function shareFile(metadata) {
+  return dropbox.sharingCreateSharedLinkWithSettings({
+    path
+  });
+}
+
 export default {
   name: NAME,
   authLink,
   getAccessTokenFromUrl,
   uploadFile,
-  setAccessToken
+  setAccessToken,
+  shareFile
 };
 
 

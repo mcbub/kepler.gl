@@ -40,7 +40,8 @@ const Root = () => (
       <Route path="/demo/(:id)" component={App} />
       {/*
       For Auth we could use a different component because we only need to update
-      the locale storage
+      the locale storage.
+      TODO: We can store the auth here token
       */}
       <Route path="/auth" component={App}/>
     </Router>

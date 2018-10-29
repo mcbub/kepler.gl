@@ -79,7 +79,10 @@ export function exportFileToCloud(type) {
     uploadFile(DropboxHandler)
       // need to perform share as well
       .then(
-        () => console.log('Uplaod success'),
+        metadata => console.log('Uplaod success'),
+      )
+      .then(
+
         error => console.log('Upload error', error)
       )
   };
