@@ -9,10 +9,24 @@ const StyledWrapper = styled.div`
 
 class CloudStorage extends Component {
   render() {
+    const {isLoading, authTokens, metadata, onExportToDropbox, status} = this.props;
+
+    const actionComponent = isLoading ?
+      (
+        <div>
+          <p>Loading...</p>
+          <p>${status}</p>
+        </div>
+      ) :
+      (
+        <button onClick={onExportToDropbox}>
+          Export map to Dropbox
+        </button>
+      );
 
     return (
       <StyledWrapper>
-        {!(this.props.authTokens && this.props.authTokens.dropbox) && (
+        {!(authTokens && authTokens.dropbox) && (
           <a
             href={DropboxHandler.authLink()}
             target="_blank"
@@ -20,10 +34,11 @@ class CloudStorage extends Component {
             Authenticate with Dropbox
           </a>
         )}
-        {(this.props.authTokens && this.props.authTokens.dropbox) && (
-          <button onClick={this.props.onExportToDropbox}>
-            Export map to Dropbox
-          </button>
+        {(authTokens && authTokens.dropbox) && actionComponent}
+        {metadata && (
+          <div>
+            ${JSON.stringify(metadata, null, 2)}
+          </div>
         )}
       </StyledWrapper>
     );

@@ -26,11 +26,16 @@ function getAccessTokenFromUrl() {
   return token;
 }
 
-function uploadFile() {
-  dropbox
+/**
+ *
+ * @param blob
+ * @param name
+ * @returns {Promise<DropboxTypes.files.FileMetadata>}
+ */
+function uploadFile(blob, name) {
   return dropbox.filesUpload({
-    path: '/kepler.json',
-    contents: new Blob([JSON.stringify({test: '123'})], {type: 'text/json'})
+    path: `/keplergl/${blob.name || name}`,
+    contents: blob
   })
 }
 
@@ -40,7 +45,7 @@ function setAccessToken(token) {
 
 function shareFile(metadata) {
   return dropbox.sharingCreateSharedLinkWithSettings({
-    path
+    path: metadata.path_display || metadata.path_lower
   });
 }
 

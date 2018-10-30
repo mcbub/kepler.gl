@@ -47,6 +47,7 @@ import Processors from 'kepler.gl/processors';
 
 import ModalDialog from 'kepler.gl/components/common/modal';
 import CloudStorage from './components/cloud-storage';
+import KeplerGlSchema from 'kepler.gl/schemas';
 
 const BannerHeight = 30;
 const BannerKey = 'kgHideBanner-iiba';
@@ -216,18 +217,22 @@ class App extends Component {
   }
 
   _toggleCloudModal = () => {
+    // TODO: this lives only in the demo hence we use the state for now
+    // REFCOTOR using redux
     this.setState({
       cloudModalOpen: !this.state.cloudModalOpen
     });
   };
 
   _onExportToDropbox = () => {
-    this.props.dispatch(exportFileToCloud('dropbox'))
+    // we pass all props because we avoid to create new variables
+    const fileContent = KeplerGlSchema.save(this.props.demo.keplerGl.map);
+    this.props.dispatch(exportFileToCloud(fileContent))
   };
 
   render() {
     const {showBanner, width, height} = this.state;
-    const {app: {authTokens}} = this.props.demo;
+    const {sharing} = this.props.demo;
     return (
       <GlobalStyleDiv>
         <Banner
@@ -245,7 +250,9 @@ class App extends Component {
             >
             <div>
               <CloudStorage
-                authTokens={authTokens}
+                authTokens={sharing.authTokens}
+                isLoading={sharing.isLoading}
+                metadata={sharing.metadata}
                 onExportToDropbox={this._onExportToDropbox}
               />
             </div>

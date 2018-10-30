@@ -21,7 +21,7 @@
 import React from 'react';
 import document from 'global/document';
 import {Provider} from 'react-redux';
-import {browserHistory, Router, Route, } from 'react-router';
+import {browserHistory, Router, Route} from 'react-router';
 import {syncHistoryWithStore} from 'react-router-redux';
 import {render} from 'react-dom';
 import store from './store';
@@ -32,6 +32,8 @@ const history = syncHistoryWithStore(browserHistory, store);
 // const prefix = getAppUrlPrefix();
 // const path = prefix === '' ? '(:id)' : `${prefix}(/:id)`;
 
+// TODO: We can store the auth token with a route callback
+
 const Root = () => (
   <Provider store={store}>
     <Router history={history}>
@@ -41,7 +43,6 @@ const Root = () => (
       {/*
       For Auth we could use a different component because we only need to update
       the locale storage.
-      TODO: We can store the auth here token
       */}
       <Route path="/auth" component={App}/>
     </Router>

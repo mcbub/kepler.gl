@@ -32,7 +32,8 @@ import {
   LOAD_REMOTE_FILE_DATA_SUCCESS,
   SET_SAMPLE_LOADING_STATUS,
   SET_AUTH_TOKEN,
-  PROPAGATE_STORAGE_EVENT
+  PROPAGATE_STORAGE_EVENT,
+  PUSHING_FILE
 } from './actions';
 
 import {DEFAULT_LOADING_METHOD, LOADING_METHODS} from './constants/default-settings';
@@ -82,8 +83,7 @@ function readAuthTokens() {
 export const appReducer = handleActions({
   [INIT]: (state) => ({
     ...state,
-    loaded: true,
-    authTokens: readAuthTokens()
+    loaded: true
   }),
   [SET_LOADING_METHOD]: (state, action) => ({
     ...state,
@@ -98,6 +98,23 @@ export const appReducer = handleActions({
   [SET_SAMPLE_LOADING_STATUS]: (state, action) => ({
     ...state,
     isMapLoading: action.isMapLoading
+  })
+}, initialAppState);
+
+const sharingInitialState = {
+  authTokens: {
+    // dropbox: '12345'
+  },
+  isLoading: false,
+  status: null,
+  metadata: null
+};
+
+// file upload reducer
+export const sharingReducer = handleActions({
+  [INIT]: (state) => ({
+    ...state,
+    authTokens: readAuthTokens()
   }),
   [LOAD_REMOTE_RESOURCE_ERROR]: (state, action) => ({
     ...state,
@@ -105,7 +122,7 @@ export const appReducer = handleActions({
     currentOption: {dataUrl: action.url},
     isMapLoading: false
   }),
-  [SET_AUTH_TOKEN]: (state) => {
+  [SET_AUTH_TOKEN]: state => {
     let token = validateAndStoreAuth(DropboxHandler);
 
     if (!token) {
@@ -123,20 +140,24 @@ export const appReducer = handleActions({
       }
     };
   },
-  [PROPAGATE_STORAGE_EVENT]: (state) => {
-    return {
-      ...state,
-      authTokens: readAuthTokens()
-    };
-  }
-}, initialAppState);
+  [PROPAGATE_STORAGE_EVENT]: state => ({
+    ...state,
+    authTokens: readAuthTokens()
+  }),
+  [PUSHING_FILE]: (state, action) => ({
+    ...state,
+    status: action.status,
+    metadata: action.metadata
+  })
+}, sharingInitialState);
 
 // combine app reducer and keplerGl reducer
 // to mimic the reducer state of kepler.gl website
 const demoReducer = combineReducers({
   // mount keplerGl reducer
   keplerGl: keplerGlReducer,
-  app: appReducer
+  app: appReducer,
+  sharing: sharingReducer
 });
 
 // this can be moved into a action and call kepler.gl action

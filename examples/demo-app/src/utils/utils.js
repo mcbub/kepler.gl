@@ -43,13 +43,25 @@ export function retrieveAuthToken(handler) {
   return token;
 }
 
-export function uploadFile(handler) {
+export function uploadFile(fileBlob, name, handler = DropboxHandler) {
   if (!handler) {
     return null;
   }
 
   if (handler.uploadFile) {
-    return handler.uploadFile();
+    return handler.uploadFile(fileBlob, name);
+  }
+
+  return Promise.reject('No auth handler');
+}
+
+export function shareFile(metadata, handler = DropboxHandler) {
+  if (!handler) {
+    return null;
+  }
+
+  if (handler.shareFile) {
+    return handler.shareFile(metadata);
   }
 
   return Promise.reject('No auth handler');

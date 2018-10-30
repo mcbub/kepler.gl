@@ -31,8 +31,7 @@ import {LOADING_METHODS_NAMES} from './constants/default-settings';
 import {toggleModal} from 'kepler.gl/actions';
 import {console as Console} from 'global/window';
 import {MAP_CONFIG_URL} from './constants/sample-maps';
-import {uploadFile} from './utils/utils';
-import DropboxHandler from './utils/dropbox';
+import {shareFile, uploadFile} from './utils/utils';
 
 
 // CONSTANTS
@@ -42,8 +41,11 @@ export const LOAD_REMOTE_RESOURCE_SUCCESS = 'LOAD_REMOTE_RESOURCE_SUCCESS';
 export const LOAD_REMOTE_RESOURCE_ERROR = 'LOAD_REMOTE_RESOURCE_ERROR';
 export const LOAD_MAP_SAMPLE_FILE = 'LOAD_MAP_SAMPLE_FILE';
 export const SET_SAMPLE_LOADING_STATUS = 'SET_SAMPLE_LOADING_STATUS';
+
+// Sharing
 export const SET_AUTH_TOKEN = 'SET_AUTH_TOKEN';
 export const PROPAGATE_STORAGE_EVENT = 'PROPAGATE_STORAGE_EVENT';
+export const PUSHING_FILE = 'PUSHING_FILE';
 
 // ACTIONS
 
@@ -61,6 +63,8 @@ export function initApp() {
     type: INIT
   }
 }
+
+// Sharing
 export function setAuthToken() {
   return {
     type: SET_AUTH_TOKEN
@@ -74,16 +78,39 @@ export function propagateStorageEvent(event) {
   };
 }
 
-export function exportFileToCloud(type) {
-  return dispatch => {
-    uploadFile(DropboxHandler)
-      // need to perform share as well
-      .then(
-        metadata => console.log('Uplaod success'),
-      )
-      .then(
+export function setPushingFile(isLoading, metadata) {
+  return {
+    type: PUSHING_FILE,
+    isLoading,
+    metadata
+  }
+}
 
-        error => console.log('Upload error', error)
+export function exportFileToCloud(data) {
+  return dispatch => {
+    // we are exporting to json format with 2 spaces,
+    // we could save bandwidth if we used a single line
+    // but it wouldn't be readable
+    const newBlob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const file = new File([newBlob], `keplergl_${(new Date()).toISOString()}.json`);
+    dispatch(setPushingFile(true, {filename: file.name, status: 'uploading', metadata: null}));
+    uploadFile(file)
+      // need to perform share as well
+      .then(metadata => {
+        console.log('Upload success', metadata);
+        dispatch(setPushingFile(true, {filename: file.name, status: 'sharing', metadata}));
+        // once we save we need to to share the file in order to retrieve the sharing url
+        return shareFile(metadata);
+      })
+      .then(
+        response => {
+          console.log('sharing completed', response);
+          dispatch(setPushingFile(false, {filename: file.name, status: 'success', metadata: response}));
+        },
+        error => {
+          dispatch(setPushingFile(false, {filename: file.name, status: 'error', error}));
+          console.log('Upload error', error);
+        }
       )
   };
 }
