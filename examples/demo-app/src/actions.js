@@ -86,13 +86,13 @@ export function setPushingFile(isLoading, metadata) {
   }
 }
 
-export function exportFileToCloud(data) {
+export function exportFileToCloud(data, handlerName = 'dropbox') {
   return dispatch => {
     // we are exporting to json format with 2 spaces,
     // we could save bandwidth if we used a single line
     // but it wouldn't be readable
     const newBlob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-    const file = new File([newBlob], `keplergl_${(new Date()).toISOString()}.json`);
+    const file = new File([newBlob], `kepler.gl/keplergl_${(new Date()).toISOString()}.json`);
     dispatch(setPushingFile(true, {filename: file.name, status: 'uploading', metadata: null}));
     uploadFile(file)
       // need to perform share as well
