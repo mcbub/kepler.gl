@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import DropboxHandler from '../utils/dropbox';
-import DropboxIcon from './icons/dropbox-icon';
+import DropboxHandler from '../../utils/dropbox';
+import DropboxIcon from '../icons/dropbox-icon';
 
 export const StyledLabel = styled.div`
   font-size: 14px;

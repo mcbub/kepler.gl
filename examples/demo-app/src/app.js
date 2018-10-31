@@ -46,7 +46,7 @@ import Processors from 'kepler.gl/processors';
 /* eslint-enable no-unused-vars */
 
 import ModalDialog from 'kepler.gl/components/common/modal';
-import CloudStorage from './components/cloud-storage';
+import CloudStorage from './components/sharing/cloud-storage';
 import KeplerGlSchema from 'kepler.gl/schemas';
 
 const BannerHeight = 30;

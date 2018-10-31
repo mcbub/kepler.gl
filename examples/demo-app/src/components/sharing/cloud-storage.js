@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import AuthHandlerTile from './auth-handler-tile';
-import DropboxHandler from '../utils/dropbox';
+import StatusPanel from './status-panel';
+import DropboxHandler from '../../utils/dropbox';
 
 const StyledWrapper = styled.div`
   flex-grow: 1;
-  padding: 32px;
-  background-color: ${props => props.theme.panelBackgroundLT};
+  font-family: ff-clan-web-pro,'Helvetica Neue',Helvetica,sans-serif;
+  font-weight: 400;
+  font-size: 0.875em;
+  line-height: 1.71429;
 `;
 
 const StyledDescription = styled.div`
@@ -31,26 +34,6 @@ const StyledList = styled.div`
   justify-content: center;
 `;
 
-const StatusPanel = ({filename, isLoading, status, metadata}) => (
-  <div>
-    <ul>
-      <li>
-        filename: {filename}
-      </li>
-      <li>
-        <span>status: {status}</span><br/>
-        {status === 'success' && (<span>Your file has been uploaded</span>)}
-      </li>
-      {isLoading && (
-        <li>Uploading</li>
-      )}
-      <li>
-        url: {metadata && metadata.url}
-      </li>
-    </ul>
-  </div>
-);
-
 class CloudStorage extends Component {
   render() {
     const {authTokens, isLoading, info} = this.props;
@@ -62,7 +45,7 @@ class CloudStorage extends Component {
             Store your Map
           </div>
           <div>
-            * The file will be stored in your own account
+            * Kepler.gl is a client-side application with no server backend. Data lives only on your machine/browser/cloud account (Dropbox).
           </div>
         </StyledDescription>
         <StyledList>
