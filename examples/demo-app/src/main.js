@@ -27,6 +27,7 @@ import {render} from 'react-dom';
 import store from './store';
 import App from './app';
 // import {getAppUrlPrefix} from './constants/default-settings';
+import {validateAndStoreAuth} from './utils/utils';
 
 const history = syncHistoryWithStore(browserHistory, store);
 // const prefix = getAppUrlPrefix();
@@ -44,7 +45,7 @@ const Root = () => (
       For Auth we could use a different component because we only need to update
       the locale storage.
       */}
-      <Route path="/auth" component={App}/>
+      <Route path="/auth" component={App} onEnter={validateAndStoreAuth()}/>
     </Router>
   </Provider>
 );

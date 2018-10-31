@@ -104,14 +104,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // delay 2s to show the banner
+    // delay zs to show the banner
     if (!window.localStorage.getItem(BannerKey)) {
       window.setTimeout(this._showBanner, 3000);
-    }
-    // detect auth
-    // TODO: this should be a constant
-    if (this.props.location.pathname === '/auth') {
-      this.props.dispatch(setAuthToken())
     }
 
     // load sample data

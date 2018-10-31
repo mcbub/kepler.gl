@@ -3,7 +3,7 @@ import DropboxHandler from './dropbox';
 
 // this should take an handler
 // dropbox as default for now
-export function validateAndStoreAuth(handler) {
+export function validateAndStoreAuth(handler = DropboxHandler) {
 
   if (!handler) {
     return null;
