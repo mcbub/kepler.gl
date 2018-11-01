@@ -27,7 +27,7 @@ import {render} from 'react-dom';
 import store from './store';
 import App from './app';
 // import {getAppUrlPrefix} from './constants/default-settings';
-import {validateAndStoreAuth} from './utils/utils';
+import {validateAndStoreAuth} from './utils/auth-token';
 
 const history = syncHistoryWithStore(browserHistory, store);
 // const prefix = getAppUrlPrefix();

@@ -37,7 +37,7 @@ import {
 } from './actions';
 
 import {DEFAULT_LOADING_METHOD, LOADING_METHODS} from './constants/default-settings';
-import {retrieveAuthToken, validateAndStoreAuth} from './utils/utils';
+import {retrieveAuthToken, validateAndStoreAuth} from './utils/auth-token';
 import DropboxHandler from './utils/dropbox';
 
 /**

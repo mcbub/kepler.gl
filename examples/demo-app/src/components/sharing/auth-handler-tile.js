@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DropboxHandler from '../../utils/dropbox';
 import DropboxIcon from '../icons/dropbox-icon';
-
+import {getMapSharingLink} from '../../utils/share';
 
 const StyledTileWrapper = styled.div`
   display: flex;
@@ -49,6 +49,9 @@ const AuthHandlerTile = ({token, onExportToDropbox, isLoading, metadata}) => {
 
   const logo = (<DropboxIcon height="64px" />);
   const showMeta = isLoading || (metadata && metadata.url);
+  const sharingLink = metadata && metadata.url ?
+    getMapSharingLink(metadata.url) : null;
+
   return (
     <StyledTileWrapper>
       <StyledTile>
@@ -67,10 +70,13 @@ const AuthHandlerTile = ({token, onExportToDropbox, isLoading, metadata}) => {
       </StyledTile>
       <StyledTileMeta>
         {showMeta && (
-          <div className="title">
-            {metadata && metadata.url && (
-              <a href={metadata.url} target="_blank">Your new map</a>
-            )}
+          <div>
+            <div className="title">
+              <a href={sharingLink} target="_blank">Share your map with other users</a>
+            </div>
+            <div className="title">
+              <a href={metadata.url} target="_blank">Your new saved configuration</a>
+            </div>
           </div>
         )}
       </StyledTileMeta>
