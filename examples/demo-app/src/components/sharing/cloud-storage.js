@@ -36,7 +36,7 @@ const StyledList = styled.div`
 
 class CloudStorage extends Component {
   render() {
-    const {authTokens, isLoading, info} = this.props;
+    const {authTokens, isLoading, info, onExportToDropbox} = this.props;
 
     return (
       <StyledWrapper>
@@ -49,15 +49,17 @@ class CloudStorage extends Component {
           </div>
         </StyledDescription>
         <StyledList>
-          {[DropboxHandler].map((handler, index) => (
+          {!isLoading && [DropboxHandler].map((handler, index) => (
             <AuthHandlerTile
               key={index}
               token={authTokens && authTokens[handler.name]}
-              {...this.props}
+              isLoading={isLoading}
+              metadata={info && info.metadata}
+              onExportToDropbox={onExportToDropbox}
             />
           ))}
         </StyledList>
-        <StatusPanel isLoading={isLoading} {...info} />
+        {isLoading && (<StatusPanel isLoading={isLoading} {...info} />)}
       </StyledWrapper>
     );
   }
