@@ -20,7 +20,7 @@
 
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
 import {routerReducer, routerMiddleware} from 'react-router-redux';
-import {hashHistory} from 'react-router';
+import {browserHistory} from 'react-router';
 
 import thunk from 'redux-thunk';
 import window from 'global/window';
@@ -36,7 +36,7 @@ const reducers = combineReducers({
 export const middlewares = [
   taskMiddleware,
   thunk,
-  routerMiddleware(hashHistory)
+  routerMiddleware(browserHistory)
 ];
 
 export const enhancers = [applyMiddleware(...middlewares)];
