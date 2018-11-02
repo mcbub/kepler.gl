@@ -124,7 +124,7 @@ export const DEFAULT_LAYER_GROUPS = [
   },
   {
     slug: '3d building',
-    filter: ({id}) => id.match(/3d-building/),
+    filter: () => false,
     defaultVisibility: false
   }
 ];
