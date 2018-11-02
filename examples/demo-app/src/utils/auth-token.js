@@ -1,5 +1,8 @@
 import DropboxHandler from './dropbox';
 
+export const AUTH_HANDLERS = {
+  [DropboxHandler.name]: DropboxHandler
+};
 
 // this should take an handler
 // dropbox as default for now
@@ -65,4 +68,21 @@ export function shareFile(metadata, handler = DropboxHandler) {
   }
 
   return Promise.reject('No auth handler');
+}
+
+/**
+ * In certain cases we want to override response URLs to avoid CORS
+ * or other restrictions
+ * @param metadata
+ * @param handler
+ * @returns {*}
+ */
+export function overrideUrl(metadata, handler = DropboxHandler) {
+  if (!handler) {
+    return null;
+  }
+
+  if (handler.overrideUrl) {
+    return handler.overrideUrl(metadata);
+  }
 }

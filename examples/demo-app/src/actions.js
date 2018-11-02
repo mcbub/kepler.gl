@@ -31,7 +31,7 @@ import {LOADING_METHODS_NAMES} from './constants/default-settings';
 import {toggleModal} from 'kepler.gl/actions';
 import {console as Console} from 'global/window';
 import {MAP_CONFIG_URL} from './constants/sample-maps';
-import {shareFile, uploadFile} from './utils/auth-token';
+import {AUTH_HANDLERS, overrideUrl, shareFile, uploadFile} from './utils/auth-token';
 
 
 // CONSTANTS
@@ -87,6 +87,7 @@ export function setPushingFile(isLoading, metadata) {
 }
 
 export function exportFileToCloud(data, handlerName = 'dropbox') {
+  const authHandler = AUTH_HANDLERS[handlerName];
   return dispatch => {
     // we are exporting to json format with 2 spaces,
     // we could save bandwidth if we used a single line
@@ -94,17 +95,21 @@ export function exportFileToCloud(data, handlerName = 'dropbox') {
     const newBlob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
     const file = new File([newBlob], `kepler.gl/keplergl_${(new Date()).toISOString()}.json`);
     dispatch(setPushingFile(true, {filename: file.name, status: 'uploading', metadata: null}));
-    uploadFile(file)
+    uploadFile(file, authHandler)
       // need to perform share as well
       .then(metadata => {
         dispatch(setPushingFile(true, {filename: file.name, status: 'sharing', metadata}));
         // once we save we need to to share the file in order to retrieve the sharing url
-        return shareFile(metadata);
+        return shareFile(metadata, authHandler);
       })
       .then(
         response => {
-          dispatch(push(`/map?mapUrl=${response.url}`));
-          dispatch(setPushingFile(false, {filename: file.name, status: 'success', metadata: response}));
+          // if dropbox update url to avoid CORS issue
+          // Unfortunately this is not the ideal scenario but it will make sure people
+          // can share dropbox urls with users without the dropbox account (publish on twitter, facebook)
+          const newMeta = overrideUrl(response, authHandler);
+          dispatch(push(`/map?mapUrl=${newMeta.url}`));
+          dispatch(setPushingFile(false, {filename: file.name, status: 'success', metadata: newMeta}));
         },
         error => {
           dispatch(setPushingFile(false, {filename: file.name, status: 'error', error}));
