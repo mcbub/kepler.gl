@@ -33,12 +33,15 @@ const history = syncHistoryWithStore(browserHistory, store);
 // const prefix = getAppUrlPrefix();
 // const path = prefix === '' ? '(:id)' : `${prefix}(/:id)`;
 
-// TODO: We can store the auth token with a route callback
+const onEnterCallback = (nextState, transition, callback) => {
+  validateAndStoreAuth();
+  callback()
+};
 
 const Root = () => (
   <Provider store={store}>
     <Router history={history}>
-      <Route path="/auth" component={App} onEnter={validateAndStoreAuth()}/>
+      <Route path="/auth" component={App} onEnter={onEnterCallback}/>
       <Route path="/demo/(:id)" component={App} />
       <Route path="/map" component={App} />
       <Route path="/" component={App} />

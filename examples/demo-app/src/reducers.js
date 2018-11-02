@@ -37,8 +37,9 @@ import {
 } from './actions';
 
 import {DEFAULT_LOADING_METHOD, LOADING_METHODS} from './constants/default-settings';
-import {retrieveAuthToken, validateAndStoreAuth} from './utils/auth-token';
-import DropboxHandler from './utils/dropbox';
+import {AUTH_HANDLERS, retrieveAuthToken, validateAndStoreAuth} from './utils/auth-token';
+
+const defaultAuthHandler = 'dropbox';
 
 /**
  * Generate a hash string based on number of character
@@ -73,9 +74,9 @@ const initialAppState = {
 // Read auth tokens from localStorage
 function readAuthTokens() {
   // we can add multiple handlers
-  return [DropboxHandler].reduce((tokens, handler) => ({
+  return [Object.keys(AUTH_HANDLERS)].reduce((tokens, key) => ({
     ...tokens,
-    [handler.name]: retrieveAuthToken(DropboxHandler)
+    [AUTH_HANDLERS[key].name]: retrieveAuthToken(AUTH_HANDLERS[key])
   }), {});
 }
 
@@ -123,7 +124,8 @@ export const sharingReducer = handleActions({
     isMapLoading: false
   }),
   [SET_AUTH_TOKEN]: state => {
-    let token = validateAndStoreAuth(DropboxHandler);
+    const authHandler = AUTH_HANDLERS[defaultAuthHandler];
+    let token = validateAndStoreAuth(authHandler);
 
     if (!token) {
       // TODO: show error
@@ -136,7 +138,7 @@ export const sharingReducer = handleActions({
       ...state,
       authTokens: {
         ...state.authTokens,
-        [DropboxHandler.name]: token
+        [authHandler.name]: token
       }
     };
   },
