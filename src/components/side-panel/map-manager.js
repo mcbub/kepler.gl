@@ -37,6 +37,7 @@ import {
 
 import PanelHeaderAction from 'components/side-panel/panel-header-action';
 import {Add, ArrowDown, EyeSeen, EyeUnseen, Upload} from 'components/common/icons';
+import { DEFAULT_LAYER_GROUPS } from 'constants/default-settings';
 
 const StyledInteractionPanel = styled.div`
   padding-bottom: 12px;
@@ -70,12 +71,9 @@ export default class MapManager extends Component {
 
   render() {
     const {mapStyle} = this.props;
-    const editableLayers = mapStyle.visibleLayerGroups;
-    const threeDBuilding = "3d building";
-    if (!editableLayers.hasOwnProperty(threeDBuilding)) {
-      editableLayers[threeDBuilding] = false;
-    }
-    
+    const editableLayers = DEFAULT_LAYER_GROUPS.map(lg => 
+      lg.slug
+    );
     return (
       <div className="map-style-panel">
         <div>
@@ -85,7 +83,7 @@ export default class MapManager extends Component {
             onChange={this._selectStyle}
             toggleActive={this._toggleSelecting}
           />
-          {Object.keys(editableLayers).length ? (
+          {editableLayers.length ? (
             <LayerGroupSelector
               layers={mapStyle.visibleLayerGroups}
               editableLayers={editableLayers}
@@ -188,7 +186,7 @@ const LayerGroupSelector = ({layers, editableLayers, onChange, topLayers}) => (
       <PanelLabel>Map Layers</PanelLabel>
     </div>
     <PanelContent className="map-style__layer-group">
-      {Object.keys(editableLayers).map(slug => (
+      {editableLayers.map(slug => (
         <StyledLayerGroupItem className="layer-group__select" key={slug}>
           <PanelLabelWrapper>
             <PanelHeaderAction
@@ -213,7 +211,7 @@ const LayerGroupSelector = ({layers, editableLayers, onChange, topLayers}) => (
             <PanelHeaderAction
               id={`${slug}-top`}
               tooltip="Move to top of data layers"
-              disabled={!layers[slug] || slug === '3d building'}
+              disabled={!layers[slug]}
               IconComponent={Upload}
               active={topLayers[slug]}
               onClick={() =>
