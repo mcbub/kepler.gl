@@ -193,7 +193,7 @@ const LayerGroupSelector = ({layers, editableLayers, onChange, topLayers}) => (
               className="layer-group__visibility-toggle"
               id={`${slug}-toggle`}
               tooltip={layers[slug] ? 'hide' : 'show'}
-              onClick={() => 
+              onClick={() =>
                 onChange({
                   visibleLayerGroups: {
                     ...layers,
